@@ -8,6 +8,9 @@ require_once 'vendor/autoload.php';
 require_once '/home/tostrand/config.php';
 require_once 'model/db-functions.php';
 
+//Start session AFTER requiring autoload!!!
+session_start();
+
 //Create an instance of the Base class
 $f3 = Base::instance();
 $f3->set('DEBUG', 3);
@@ -18,6 +21,8 @@ $dbh = connect();
 //Define a default route
 $f3->route('GET /', function($f3, $params) {
 
+    print_r($_SESSION);
+
     $students = getStudents();
     $f3->set("students", $students);
 
@@ -27,7 +32,7 @@ $f3->route('GET /', function($f3, $params) {
 
 });
 
-//Define a default route
+//Define an add route
 $f3->route('GET|POST /add', function($f3, $params) {
 
     /*
@@ -55,14 +60,28 @@ $f3->route('GET|POST /add', function($f3, $params) {
         //insert the student into the db
         $result = insertStudent($sid, $last, $first, $birthdate, $gpa, $advisor);
 
-        //redirect to home page
-        $f3->reroute('/');
-    }
+        //instantiate a student object
+        $student = new Student($sid, $last, $first, $birthdate, $gpa, $advisor);
 
+        //add student object to session array
+        $_SESSION['student'] = $student;
+
+        //redirect to summary page
+        $f3->reroute('/summary');
+    }
 
     //load a template
     $template = new Template();
     echo $template->render('views/add-student.html');
+
+});
+
+//Define a summary route
+$f3->route('GET /summary', function() {
+
+    //load a template
+    $template = new Template();
+    echo $template->render('views/view-student.html');
 
 });
 
