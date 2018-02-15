@@ -12,16 +12,18 @@ require_once 'model/db-functions.php';
 $f3 = Base::instance();
 $f3->set('DEBUG', 3);
 
+//Connect to database
+$dbh = connect();
+
 //Define a default route
 $f3->route('GET /', function($f3, $params) {
 
-    echo "Student List<br>";
-
-    $dbh = connect();
+    $students = getStudents();
+    $f3->set("students", $students);
 
     //load a template
-    // $template = new Template();
-    // echo $template->render('views/info.html');
+    $template = new Template();
+    echo $template->render('views/all-students.html');
 
 });
 
