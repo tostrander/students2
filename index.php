@@ -1,19 +1,16 @@
 <?php
 
-error_reporting(E_ALL);
-ini_set('display_errors', TRUE);
-
 //Required files
 require_once 'vendor/autoload.php';
 require_once '/home/tostrand/config.php';
 require_once 'model/db-functions.php';
 
-//Start session AFTER requiring autoload!!!
-session_start();
-
 //Create an instance of the Base class
 $f3 = Base::instance();
-$f3->set('DEBUG', 3);
+
+require_once '/home/tostrand/public_html/debug.php';
+
+session_start();
 
 //Connect to database
 $dbh = connect();
